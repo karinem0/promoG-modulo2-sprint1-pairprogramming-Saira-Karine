@@ -61,15 +61,15 @@ WHERE `unit_price` IN (SELECT MAX(`unit_price`)
 -- Extraed cuál es el producto que más ha sido comprado y la cantidad que se compró.
 SELECT `product_name`, `product_id`
 FROM `products`
-WHERE `product_id` IN (SELECT SUM(`quantity`)
+WHERE `product_id` IN (SELECT `product_id`
 							FROM `order_details`
-							GROUP BY `product_id`
-							HAVING SUM(`quantity`))
-                            ; 
+							GROUP BY `product_id`)
+							ORDER BY SUM(`quantity`) DESC)
+                            LIMIT 1; 
 
-
-SELECT SUM(`quantity`)
+SELECT COUNT(`product_id`) * (`quantity`) AS `suma`
 	FROM `order_details`
 	GROUP BY `product_id`
-	HAVING SUM(`quantity`))
-	; 
+	ORDER BY `suma` DESC
+	LIMIT 1; 
+
