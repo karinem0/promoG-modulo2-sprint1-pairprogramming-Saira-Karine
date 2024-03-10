@@ -59,17 +59,15 @@ WHERE `unit_price` IN (SELECT MAX(`unit_price`)
 -- EJERCICIO 7: BONUS
 -- Qué producto es más popular
 -- Extraed cuál es el producto que más ha sido comprado y la cantidad que se compró.
-SELECT `product_name`, `product_id`
-FROM `products`
-WHERE `product_id` IN (SELECT `product_id`
-							FROM `order_details`
-							GROUP BY `product_id`)
-							ORDER BY SUM(`quantity`) DESC)
-                            LIMIT 1; 
 
-SELECT COUNT(`product_id`) * (`quantity`) AS `suma`
-	FROM `order_details`
-	GROUP BY `product_id`
-	ORDER BY `suma` DESC
-	LIMIT 1; 
-
+SELECT SUM(`quantity`) AS `Cantidad`, `product_name`
+FROM `order_details`
+INNER JOIN `products`
+ON `order_details.product_id` = `products.product_id`
+GROUP BY `product_name`
+HAVING `Cantidad` = (
+	SELECT MAX(`Cantidad`)
+	FROM 
+		(SELECT `product_id`, SUM(`quantity`) AS `Cantidad`
+		FROM order_details
+		GROUP BY product_id) AS t);
